@@ -13,12 +13,7 @@ const sessionSchema = new Schema({
 const Session = mongoose.model("Session", sessionSchema);
 
 function validateSession(session) {
-  const schema = {
-    name: Joi.required().string().min(5).max(25),
-    lastName: Joi.required().string().min(5).max(25),
-    nationalCode: Joi.required().number().min(10).max(10),
-    password: Joi.string().min(6).max(255),
-  };
+  const schema = {};
 
   return Joi.validate(session, schema);
 }
