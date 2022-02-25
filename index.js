@@ -8,6 +8,7 @@ require("./startup/routes")(app);
 require("./startup/config");
 const corsMiddleware = require("./middleware/cors");
 
+app.options("*", corsMiddleware);
 app.use(corsMiddleware);
 
 const server = app.listen(3900, () => winston.info("Listening on port 3000"));
