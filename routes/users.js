@@ -46,11 +46,6 @@ router.post("/", async (req, res) => {
 
   res
     .header("x-auth-token", token)
-    .header("Access-Control-Allow-Origin", "*")
-    .header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    )
     .send(_.pick(user, ["name", "lastName", "nationalCode"]));
 });
 
