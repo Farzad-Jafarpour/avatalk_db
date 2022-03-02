@@ -11,6 +11,7 @@ router.get("/", async (req, res) => {
 router.post("/", auth, async (req, res) => {
   let classroom = new Classroom({
     numberOfSessions: req.body.numberOfSessions,
+    name: req.body.name,
     sessions: req.body.sessions,
   });
   classroom = await classroom.save();
