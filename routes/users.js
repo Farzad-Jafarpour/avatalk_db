@@ -17,6 +17,13 @@ router.get("/me", auth, async (req, res) => {
   res.send(user);
 });
 
+router.get("/:nationalCode", auth, async (req, res) => {
+  const user = await User.findOne({
+    nationalCode: req.user.nationalCode,
+  }).select("-password");
+  res.send(user);
+});
+
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
