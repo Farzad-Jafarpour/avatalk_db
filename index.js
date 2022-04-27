@@ -11,6 +11,6 @@ require("./startup/db")();
 require("./startup/routes")(app);
 require("./startup/config");
 
-const server = app.listen(3900, () => winston.info("Listening on port 3000"));
+const server = app.listen(3900, () => winston.info("Listening on port 3900"));
 
 module.exports = server;
