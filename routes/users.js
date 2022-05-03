@@ -3,10 +3,21 @@ const _ = require("lodash");
 const auth = require("../middleware/auth");
 const express = require("express");
 const { User, validate } = require("../models/user");
+const admin = require("../middleware/admin");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const users = await User.find().sort("name");
+  const users = await User.find()
+    .sort("name")
+    .select([
+      "name",
+      "lastName",
+      "isTeacher",
+      "isStudent",
+      "isAdmin",
+      "nationalCode",
+      ,
+    ]);
   res.send(users);
 });
 
@@ -57,9 +68,22 @@ router.post("/", async (req, res) => {
     .send(_.pick(user, ["name", "lastName", "nationalCode"]));
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:nationalCode", (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+});
+
+router.delete("/:nationalCode", auth, admin, async (req, res) => {
+  const user = await User.findOneAndRemove({
+    nationalCode: req.params.nationalCode,
+  });
+
+  if (!user)
+    return res
+      .status(404)
+      .send("The user with the given national code was not found.");
+
+  res.send(user);
 });
 
 module.exports = router;

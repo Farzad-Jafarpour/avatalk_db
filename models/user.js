@@ -34,6 +34,7 @@ userSchema.methods.generateAuthToken = function () {
       nationalCode: this.nationalCode,
       isAdmin: this.isAdmin,
       isTeacher: this.isTeacher,
+      isStudent: this.isStudent,
       name: this.name,
       lastName: this.lastName,
     },
