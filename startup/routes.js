@@ -4,10 +4,12 @@ const auth = require("../routes/auth");
 const classes = require("../routes/classes");
 const sessions = require("../routes/sessions");
 const error = require("../middleware/error");
+const cards = require("../routes/cards");
 
 module.exports = function (app) {
   app.use(express.json());
   app.use("/api/users", users);
+  app.use("/api/cards", cards);
   app.use("/api/classes", classes);
   app.use("/api/sessions", sessions);
   app.use("/api/auth", auth);
