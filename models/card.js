@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const cardSchema = new Schema({
   name: { type: String, minlength: 5, maxlength: 50 },
   description: { type: String, minlength: 5, maxlength: 500 },
+  cardImage: { type: String },
 });
 
 const Card = mongoose.model("Card", cardSchema);

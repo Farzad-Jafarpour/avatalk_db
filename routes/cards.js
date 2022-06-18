@@ -16,27 +16,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-// router.get("/", async (req, res) => {
-//   const users = await User.find()
-//     .sort("name")
-//     .select([
-//       "name",
-//       "lastName",
-//       "isTeacher",
-//       "isStudent",
-//       "isAdmin",
-//       "nationalCode",
-//       ,
-//     ]);
-//   res.send(users);
-// });
 
-// router.get("/me", auth, async (req, res) => {
-//   const user = await User.findOne({
-//     nationalCode: req.user.nationalCode,
-//   }).select("-password");
-//   res.send(user);
-// });
+router.get("/", async (req, res) => {
+  const cards = await Card.find()
+    .sort("name")
+    .select(["name", "description", "cardImage"]);
+  res.send(cards);
+});
+
+router.get("/:id", async (req, res) => {
+  const card = await Card.findOne({
+    id: req.params.id,
+  });
+  res.send(card);
+});
 
 // router.get("/:nationalCode", auth, async (req, res) => {
 //   const user = await User.findOne({
@@ -46,7 +39,7 @@ const upload = multer({ storage: storage });
 //   res.send(user);
 // });
 
-router.post("/", upload.single("cardImage"), async (req, res) => {
+router.post("/upload", upload.single("cardImage"), async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
@@ -54,31 +47,39 @@ router.post("/", upload.single("cardImage"), async (req, res) => {
   // let card = await Card.findOne({ nationalCode: req.body.nationalCode });
   // if (card) return res.status(400).send("user already registered");
 
-  card = new Card(_.pick(req.body, ["name", "description"]));
+  res.send(req.file.filename);
+});
+
+router.post("/", async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+  }
+  // let card = await Card.findOne({ nationalCode: req.body.nationalCode });
+  // if (card) return res.status(400).send("user already registered");
+
+  card = new Card(_.pick(req.body, ["name", "description", "cardImage"]));
 
   card = await card.save();
 
   // const token = user.generateAuthToken();
-
-  res.send(_.pick(card, ["name"]));
+  res.send(req.file.path);
+  // res.send(_.pick(card, ["name", " cardImage"]));
 });
 
-// router.put("/:nationalCode", async (req, res) => {
-//   const { error } = validate(req.user);
-//   if (error) return res.status(400).send(error.details[0].message);
+router.put("/:id", upload.single("cardImage"), async (req, res) => {
+  // const { error } = validate(req.user);
+  // if (error) return res.status(400).send(error.details[0].message);
 
-//   let user = await User.findOne({ nationalCode: req.params.nationalCode });
-//   if (!user) return res.status(404).send("user not found");
+  let card = await Card.findOne({ id: req.params.id });
+  // if (!card) return res.status(404).send("card not found");
 
-//   user.name = req.body.name;
-//   user.lastName = req.body.lastName;
-//   user.nationalCode = req.body.nationalCode;
-//   user.isAdmin = req.body.isAdmin;
-//   user.isTeacher = req.body.isTeacher;
-//   user.isStudent = req.body.isStudent;
-//   if (user.password) user.password = user.password;
-//   user = await user.save();
-// });
+  card.name = req.body.name;
+  card.description = req.body.description;
+  card.cardImage = req.file.filename;
+
+  card = await card.save();
+});
 
 // router.delete("/:nationalCode", auth, admin, async (req, res) => {
 //   const user = await User.findOneAndRemove({
