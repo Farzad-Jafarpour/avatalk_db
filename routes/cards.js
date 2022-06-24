@@ -39,7 +39,7 @@ router.get("/:id", async (req, res) => {
 //   res.send(user);
 // });
 
-router.post("/upload", upload.single("cardImage"), async (req, res) => {
+router.post("/upload", upload.any("cardImage"), async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
