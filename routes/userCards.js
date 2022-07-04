@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const express = require("express");
-const { Card, validate } = require("../models/card");
+const { card, validate } = require("../models/card");
 const admin = require("../middleware/admin");
 const router = express.Router();
 
@@ -18,20 +18,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get("/", async (req, res) => {
-  const userCards = await Card.find()
+  const userCards = await UserCard.find()
     .sort("name")
-    .select(["name", "description", "cardImage"]);
+    .select(["name", "description", "userCardImage"]);
   res.send(userCards);
 });
 
 router.get("/:id", async (req, res) => {
-  const card = await Card.findOne({
+  const userCard = await UserCard.findOne({
     id: req.params.id,
   });
-  res.send(card);
+  res.send(userCard);
 });
 
-router.post("/upload", upload.single("cardImage"), async (req, res) => {
+router.post("/userfiles", upload.single("userCardImage"), async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
@@ -45,21 +45,23 @@ router.post("/", async (req, res) => {
     res.status(400).send(error.details[0].message);
   }
   console.log(req.body);
-  card = new Card(_.pick(req.body, ["name", "description", "cardImage"]));
+  userCard = new userCard(
+    _.pick(req.body, ["name", "description", "userCardImage"])
+  );
 
-  card = await card.save();
+  userCard = await UserCard.save();
 
-  res.send(_.pick(card, ["name", " cardImage"]));
+  res.send(_.pick(userCard, ["name", " userCardImage"]));
 });
 
 router.put("/:id", async (req, res) => {
-  let card = await Card.findOne({ id: req.params.id });
-  // if (!card) return res.status(404).send("card not found");
-  card.name = req.body.name;
-  card.description = req.body.description;
-  card.cardImage = req.body.cardImage;
-  card = await card.save();
-  res.send(card);
+  let userCard = await userCard.findOne({ id: req.params.id });
+  // if (!userCard) return res.status(404).send("userCard not found");
+  userCard.name = req.body.name;
+  userCard.description = req.body.description;
+  userCard.userCardImage = req.body.userCardImage;
+  userCard = await UserCard.save();
+  res.send(userCard);
 });
 
 // router.delete("/:nationalCode", auth, admin, async (req, res) => {

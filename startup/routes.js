@@ -5,6 +5,7 @@ const classes = require("../routes/classes");
 const sessions = require("../routes/sessions");
 const error = require("../middleware/error");
 const cards = require("../routes/cards");
+const userCards = require("../routes/userCards");
 
 module.exports = function (app) {
   app.use(express.json());
@@ -12,6 +13,7 @@ module.exports = function (app) {
   app.use("/userfiles", express.static("userfiles"));
   app.use("/api/users", users);
   app.use("/api/cards", cards);
+  app.use("/api/usercards", userCards);
   app.use("/api/classes", classes);
   app.use("/api/sessions", sessions);
   app.use("/api/auth", auth);
