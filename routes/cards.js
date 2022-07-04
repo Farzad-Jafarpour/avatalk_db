@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   },
 });
-
+//
 const upload = multer({ storage: storage });
 
 router.get("/", async (req, res) => {
@@ -39,15 +39,12 @@ router.get("/:id", async (req, res) => {
 //   res.send(user);
 // });
 
-router.post("/upload", upload.any("cardImage"), async (req, res) => {
+router.post("/upload", upload.single("cardImage"), async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
   }
-  // let card = await Card.findOne({ nationalCode: req.body.nationalCode });
-  // if (card) return res.status(400).send("user already registered");
-
-  res.send(req.file.filename);
+  res.send(req.file.path);
 });
 
 router.post("/", async (req, res) => {
@@ -57,28 +54,28 @@ router.post("/", async (req, res) => {
   }
   // let card = await Card.findOne({ nationalCode: req.body.nationalCode });
   // if (card) return res.status(400).send("user already registered");
-
+  console.log(req.body);
   card = new Card(_.pick(req.body, ["name", "description", "cardImage"]));
 
   card = await card.save();
 
   // const token = user.generateAuthToken();
-  res.send(req.file.path);
-  // res.send(_.pick(card, ["name", " cardImage"]));
+  // res.send(req.file.path);
+  res.send(_.pick(card, ["name", " cardImage"]));
 });
 
-router.put("/:id", upload.single("cardImage"), async (req, res) => {
+router.put("/:id", async (req, res) => {
   // const { error } = validate(req.user);
   // if (error) return res.status(400).send(error.details[0].message);
+  console.log("asgar");
 
   let card = await Card.findOne({ id: req.params.id });
   // if (!card) return res.status(404).send("card not found");
-
   card.name = req.body.name;
   card.description = req.body.description;
-  card.cardImage = req.file.filename;
-
+  card.cardImage = req.body.cardImage;
   card = await card.save();
+  res.send(card);
 });
 
 // router.delete("/:nationalCode", auth, admin, async (req, res) => {

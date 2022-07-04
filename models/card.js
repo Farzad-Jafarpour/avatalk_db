@@ -14,6 +14,7 @@ function validateCard(card) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50),
     description: Joi.string().min(5).max(500),
+    cardImage: Joi.string().max(500),
   });
 
   return schema.validate(card);

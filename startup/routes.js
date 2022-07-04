@@ -9,6 +9,7 @@ const cards = require("../routes/cards");
 module.exports = function (app) {
   app.use(express.json());
   app.use("/files", express.static("files"));
+  app.use("/userfiles", express.static("userfiles"));
   app.use("/api/users", users);
   app.use("/api/cards", cards);
   app.use("/api/classes", classes);
