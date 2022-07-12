@@ -32,6 +32,7 @@ router.get("/:nationalCode", auth, async (req, res) => {
   const user = await User.findOne({
     nationalCode: req.user.nationalCode,
   }).select("-password");
+  if (!user) return res.status(404).send("user not found");
   res.send(user);
 });
 
@@ -41,7 +42,7 @@ router.post("/", async (req, res) => {
     res.status(400).send(error.details[0].message);
   }
   let user = await User.findOne({ nationalCode: req.body.nationalCode });
-  if (user) return res.status(400).send("user alrady registered");
+  if (user) return res.status(400).send("user already registered");
 
   user = new User(
     _.pick(req.body, [
@@ -68,9 +69,21 @@ router.post("/", async (req, res) => {
     .send(_.pick(user, ["name", "lastName", "nationalCode"]));
 });
 
-router.put("/:nationalCode", (req, res) => {
-  const { error } = validate(req.body);
+router.put("/:nationalCode", async (req, res) => {
+  const { error } = validate(req.user);
   if (error) return res.status(400).send(error.details[0].message);
+
+  let user = await User.findOne({ nationalCode: req.params.nationalCode });
+  if (!user) return res.status(404).send("user not found");
+
+  user.name = req.body.name;
+  user.lastName = req.body.lastName;
+  user.nationalCode = req.body.nationalCode;
+  user.isAdmin = req.body.isAdmin;
+  user.isTeacher = req.body.isTeacher;
+  user.isStudent = req.body.isStudent;
+  if (user.password) user.password = user.password;
+  user = await user.save();
 });
 
 router.delete("/:nationalCode", auth, admin, async (req, res) => {
