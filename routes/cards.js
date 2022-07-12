@@ -67,9 +67,10 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   // const { error } = validate(req.user);
   // if (error) return res.status(400).send(error.details[0].message);
-  console.log("asgar");
+  console.log(req.params.id);
 
-  let card = await Card.findOne({ id: req.params.id });
+  let card = await Card.findOne({ _id: req.params.id });
+  console.log(card._id);
   // if (!card) return res.status(404).send("card not found");
   card.name = req.body.name;
   card.description = req.body.description;
