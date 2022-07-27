@@ -82,7 +82,12 @@ router.put("/:nationalCode", async (req, res) => {
   user.isAdmin = req.body.isAdmin;
   user.isTeacher = req.body.isTeacher;
   user.isStudent = req.body.isStudent;
-  if (user.password) user.password = user.password;
+  if (req.body.password) {
+    const salt = await bcrypt.genSalt(10);
+    user.password = req.body.password;
+    user.password = await bcrypt.hash(user.password, salt);
+  }
+
   user = await user.save();
 });
 

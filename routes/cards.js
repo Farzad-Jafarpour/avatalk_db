@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const fs = require("fs");
 const auth = require("../middleware/auth");
 const express = require("express");
 const { Card, validate } = require("../models/card");
@@ -26,7 +27,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const card = await Card.findOne({
-    id: req.params.id,
+    _id: req.params.id,
   });
   res.send(card);
 });
@@ -67,7 +68,6 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   // const { error } = validate(req.user);
   // if (error) return res.status(400).send(error.details[0].message);
-  console.log(req.params.id);
 
   let card = await Card.findOne({ _id: req.params.id });
   console.log(card._id);
@@ -79,6 +79,14 @@ router.put("/:id", async (req, res) => {
   res.send(card);
 });
 
+router.delete("/files/:imageToBeDeleted", async (req, res) => {
+  console.log(req.params.imageToBeDeleted);
+  fs.unlink(`./files/${req.params.imageToBeDeleted}`, (err) => {
+    if (err) console.log(err.message);
+    else res.send("Deleting succeded");
+  });
+  // res.send(asgar);
+});
 // router.delete("/:nationalCode", auth, admin, async (req, res) => {
 //   const user = await User.findOneAndRemove({
 //     nationalCode: req.params.nationalCode,
