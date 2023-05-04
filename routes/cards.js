@@ -32,13 +32,13 @@ router.get("/:id", async (req, res) => {
   res.send(card);
 });
 
-// router.get("/:nationalCode", auth, async (req, res) => {
-//   const user = await User.findOne({
-//     nationalCode: req.user.nationalCode,
-//   }).select("-password");
-//   if (!user) return res.status(404).send("user not found");
-//   res.send(user);
-// });
+router.get("/:nationalCode", auth, async (req, res) => {
+  const user = await User.findOne({
+    nationalCode: req.user.nationalCode,
+  }).select("-password");
+  if (!user) return res.status(404).send("user not found");
+  res.send(user);
+});
 
 router.post("/upload", upload.single("cardImage"), async (req, res) => {
   const { error } = validate(req.body);
