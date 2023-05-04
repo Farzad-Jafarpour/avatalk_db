@@ -10,6 +10,7 @@ require("./startup/logging");
 require("./startup/db")();
 require("./startup/routes")(app);
 require("./startup/config");
+require("./startup/prod")(app);
 
 const server = app.listen(3900, () => winston.info("Listening on port 3900"));
 
